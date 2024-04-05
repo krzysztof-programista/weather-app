@@ -5,6 +5,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import pl.example.model.Weather;
+import pl.example.model.WeatherForecast;
 import pl.example.model.WeatherService;
 import pl.example.model.WeatherServiceFactory;
 
@@ -36,15 +37,15 @@ public class MainWindowController extends BaseController implements Initializabl
     public void checkWeatherAction() {
         String cityName = "Kraków";
 
-        Weather weather = weatherService.getWeather(cityName);
+        WeatherForecast weather = weatherService.getWeather(cityName);
 
         displayWeather(weather);
 
     }
 
-    private void displayWeather(Weather weather){
+    private void displayWeather(WeatherForecast weather){
         temperature.setVisible(true);
         temperatureLabel.setVisible(true);
-        temperature.setText("" + weather.getTempInCelsius());
+        temperature.setText("" + weather.getWeathers());
     }
 }
