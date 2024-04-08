@@ -1,6 +1,5 @@
 package pl.example.model.client;
 
-import pl.example.model.Weather;
 import pl.example.model.WeatherForecast;
 
 import java.time.LocalDate;

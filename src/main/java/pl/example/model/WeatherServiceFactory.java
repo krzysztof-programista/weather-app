@@ -1,7 +1,6 @@
 package pl.example.model;
 
 import pl.example.model.client.ExampleWeatherClient;
-import pl.example.model.client.MyWeatherClient;
 import pl.example.model.client.WeatherClient;
 
 public class WeatherServiceFactory {

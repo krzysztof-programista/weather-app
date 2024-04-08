@@ -15,10 +15,14 @@ public class WeatherService {
     }
 
     public WeatherForecast getWeather(String cityName) {
+
         SingleDayWeather currentWeather = weatherClient.currentWeather(cityName);
         Collection<SingleDayWeather> forecast = weatherClient.forecast(cityName);
+
         List<SingleDayWeather> result = new ArrayList<>(forecast);
+
         result.add(currentWeather);
-        return weatherClient.getWeather(cityName,result);
+
+        return new WeatherForecast(cityName, result);
     }
 }
