@@ -3,7 +3,7 @@ package pl.example;
 import javafx.application.Application;
 
 import javafx.stage.Stage;
-import pl.example.view.ViewFactory;
+import pl.example.model.client.OpenWeatherMapClient;
 
 public class App extends Application
 {
@@ -15,9 +15,12 @@ public class App extends Application
     @Override
     public void start(Stage primaryStage) throws Exception {
 
-        ViewFactory viewFactory = new ViewFactory();
-        viewFactory.showMainWindow(primaryStage);
+//        ViewFactory viewFactory = new ViewFactory();
+//        viewFactory.showMainWindow(primaryStage);
 
+        OpenWeatherMapClient openWeatherMapClient = new OpenWeatherMapClient();
+
+        System.out.println(openWeatherMapClient.getFiveDaysForecast("Poznań"));
     }
 
 

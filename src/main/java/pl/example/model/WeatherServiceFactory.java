@@ -1,6 +1,6 @@
 package pl.example.model;
 
-import pl.example.model.client.ExampleWeatherClient;
+import pl.example.model.client.OpenWeatherMapClient;
 import pl.example.model.client.WeatherClient;
 
 public class WeatherServiceFactory {
@@ -10,7 +10,6 @@ public class WeatherServiceFactory {
     }
 
     private static WeatherClient createWeatherClient() {
-        return new ExampleWeatherClient();
-        //return new MyWeatherClient();
+        return new OpenWeatherMapClient();
     }
 }

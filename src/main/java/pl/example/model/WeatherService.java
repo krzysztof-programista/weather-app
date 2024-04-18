@@ -2,6 +2,8 @@ package pl.example.model;
 
 import pl.example.model.client.WeatherClient;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -14,15 +16,11 @@ public class WeatherService {
         this.weatherClient = weatherClient;
     }
 
-    public WeatherForecast getWeather(String cityName) {
+    public WeatherForecast getWeatherForecast(String cityName) throws IOException, URISyntaxException, InterruptedException {
+        Collection<SingleDayWeather> forecast = weatherClient.getFiveDaysForecast(cityName);
 
-        SingleDayWeather currentWeather = weatherClient.currentWeather(cityName);
-        Collection<SingleDayWeather> forecast = weatherClient.forecast(cityName);
-
-        List<SingleDayWeather> result = new ArrayList<>(forecast);
-
-        result.add(currentWeather);
-
-        return new WeatherForecast(cityName, result);
+        return new WeatherForecast(cityName, forecast); //przekazuje pgodody dniowe do prognozy pogody
     }
 }
+
+

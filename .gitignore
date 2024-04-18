@@ -1,5 +1,6 @@
 target/
 !**/src/test/
+Config.java
 
 ### IntelliJ IDEA ###
 .idea/

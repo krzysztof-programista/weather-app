@@ -4,10 +4,13 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
+import pl.example.DifferentApiTest;
 import pl.example.model.WeatherForecast;
 import pl.example.model.WeatherService;
 import pl.example.model.WeatherServiceFactory;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -19,6 +22,16 @@ public class MainWindowController extends BaseController implements Initializabl
     private Label temperature;
     @FXML
     private Label temperatureLabel;
+    @FXML
+    private Label temperature1;
+    @FXML
+    private Label temperature2;
+    @FXML
+    private Label temperature3;
+    @FXML
+    private Label temperature4;
+    @FXML
+    private Label temperature5;
     private WeatherService weatherService;
 
     public MainWindowController(String fxmlName) {
@@ -33,18 +46,21 @@ public class MainWindowController extends BaseController implements Initializabl
     }
 
     @FXML
-    public void checkWeatherAction() {
+    public void checkWeatherAction() throws IOException, URISyntaxException, InterruptedException {
         String cityName = "Kraków";
 
-        WeatherForecast weather = weatherService.getWeather(cityName);
+        WeatherForecast weatherForecast = weatherService.getWeatherForecast(cityName);
 
-        displayWeather(weather);
+        //System.out.println(weatherForecast.forToday());
+        System.out.println(weatherForecast.getWeathers());
+        displayWeather(weatherForecast);
+
 
     }
 
-    private void displayWeather(WeatherForecast weather){
+    private void displayWeather(WeatherForecast weatherForecast){
         temperature.setVisible(true);
         temperatureLabel.setVisible(true);
-        temperature.setText("" + weather.getWeathers());
+        //temperature.setText("" + weatherForecast.forToday().getTempInCelsius());
     }
 }

@@ -22,10 +22,4 @@ public class WeatherForecast {
         return weathers;
     }
 
-    public SingleDayWeather forToday() {
-        return weathers.stream()
-                .filter(weather -> LocalDate.now().equals(weather.getDate()))
-                .findFirst()
-                .orElseThrow(() -> new RuntimeException("Weather for today not found"));
-    }
 }

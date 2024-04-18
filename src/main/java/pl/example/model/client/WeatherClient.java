@@ -1,16 +1,14 @@
 package pl.example.model.client;
 
 import pl.example.model.SingleDayWeather;
-import pl.example.model.WeatherForecast;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Collection;
-import java.util.List;
 
 public interface WeatherClient {
 
-    SingleDayWeather currentWeather(String cityName);
+    Collection<SingleDayWeather> getFiveDaysForecast(String cityName) throws IOException, URISyntaxException, InterruptedException;
 
-    Collection<SingleDayWeather> forecast(String cityName);
 
-    WeatherForecast getWeather(String cityName, List<SingleDayWeather> result);
 }

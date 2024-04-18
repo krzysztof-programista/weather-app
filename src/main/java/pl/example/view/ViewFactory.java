@@ -12,8 +12,8 @@ import java.io.IOException;
 
 public class ViewFactory {
 
-    private static final int MAIN_WINDOW_HEIGHT = 850;
-    private static final int MAIN_WINDOW_WIDTH = 1375;
+    private static final int MAIN_WINDOW_HEIGHT = 600;
+    private static final int MAIN_WINDOW_WIDTH = 1000;
 
     private static final BorderPane MAIN_VIEW = (BorderPane) loadFXML(new MainWindowController("MainWindow"));
     private static final Scene SCENE = new Scene(MAIN_VIEW);
