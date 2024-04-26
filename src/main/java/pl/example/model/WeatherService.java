@@ -16,10 +16,14 @@ public class WeatherService {
         this.weatherClient = weatherClient;
     }
 
-    public WeatherForecast getWeatherForecast(String cityName) throws IOException, URISyntaxException, InterruptedException {
-        Collection<SingleDayWeather> forecast = weatherClient.getFiveDaysForecast(cityName);
 
-        return new WeatherForecast(cityName, forecast); //przekazuje pgodody dniowe do prognozy pogody
+    public WeatherForecast getWeatherForecast(String requestedCityName) throws IOException, URISyntaxException, InterruptedException {
+
+        Collection<SingleDayWeather> forecast = weatherClient.getFiveDaysForecast(requestedCityName);
+        String city = weatherClient.getCity();
+        String country = weatherClient.getCountry();
+
+        return new WeatherForecast(city,country,forecast);
     }
 }
 

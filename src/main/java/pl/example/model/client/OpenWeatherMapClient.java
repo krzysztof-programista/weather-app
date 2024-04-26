@@ -4,25 +4,41 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import pl.example.Config;
+import pl.example.model.CountryDecoder;
 import pl.example.model.DataPackage;
 import pl.example.model.SingleDayWeather;
 
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.URI;
+import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.*;
 
 public class OpenWeatherMapClient implements WeatherClient{
 
     private final HttpClient client;
+    private String country = "";
+    private String city = "";
 
     public OpenWeatherMapClient() {
         this.client = HttpClient.newBuilder()
                 .build();
+    }
+
+    @Override
+    public String getCity() {
+        return city;
+    }
+
+    @Override
+    public String getCountry() {
+        return country;
     }
 
     @Override
@@ -41,10 +57,11 @@ public class OpenWeatherMapClient implements WeatherClient{
 
     private HttpResponse<String> getHttpResponse(String cityName) throws IOException, InterruptedException {
         String apiKey = Config.getApiKey();
+        String encodedCityName = URLEncoder.encode(cityName, StandardCharsets.UTF_8);
 
         HttpRequest request = HttpRequest.newBuilder()
                 .version(HttpClient.Version.HTTP_2)
-                .uri(URI.create("https://api.openweathermap.org/data/2.5/forecast?q=" + cityName + "&appid=" + apiKey))
+                .uri(URI.create("https://api.openweathermap.org/data/2.5/forecast?q=" + encodedCityName + "&appid=" + apiKey))
                 .build();
 
         try {
@@ -58,13 +75,13 @@ public class OpenWeatherMapClient implements WeatherClient{
 
         switch (responseCode) {
             case 401:
-                throw new IOException("Unauthorized access while fetching weather data. Check your API key.");
+                throw new IOException("Nieautoryzowany dostęp podczas pobierania danych pogodowych. Sprawdź swój klucz API.");
             case 404:
-                throw new IOException("City not found: " + cityName);
+                throw new IOException("Nie znaleziono miasta: " + cityName);
             case 500:
-                throw new IOException("Internal server error on the weather data provider's side.");
+                throw new IOException("Wewnętrzny błąd serwera po stronie dostawcy danych pogodowych.");
             default:
-                throw new IOException("Failed to fetch data: HTTP status code " + responseCode);
+                throw new IOException("Nie udało się pobrać danych: kod stanu HTTP " + responseCode);
         }
     }
 
@@ -82,6 +99,9 @@ public class OpenWeatherMapClient implements WeatherClient{
         try {
             JSONObject dataFromApi = new JSONObject(response.body());
             JSONArray weatherDataFromApi = dataFromApi.getJSONArray("list");
+            this.city = dataFromApi.getJSONObject("city").getString("name");
+            this.country = CountryDecoder.getFullNameOfCountry(dataFromApi.getJSONObject("city").getString("country"));
+
 
             for (int i = 0; i < weatherDataFromApi.length(); i++) {
                 JSONObject threeHourWeather = weatherDataFromApi.getJSONObject(i);
@@ -98,14 +118,20 @@ public class OpenWeatherMapClient implements WeatherClient{
     }
 
     private DataPackage extractDataPackage(JSONObject threeHourWeather, LocalDate date) {
-        double temperature = threeHourWeather.getJSONObject("main").getDouble("temp");
+        double temperature = Math.round(convertKelvinToCelsius(threeHourWeather.getJSONObject("main").getDouble("temp")));
         int pressure = threeHourWeather.getJSONObject("main").getInt("pressure");
+        int humidity = threeHourWeather.getJSONObject("main").getInt("humidity");
         String icon = threeHourWeather.getJSONArray("weather").getJSONObject(0).getString("icon");
         int cloudiness = threeHourWeather.getJSONObject("clouds").getInt("all");
         double windSpeed = threeHourWeather.getJSONObject("wind").getDouble("speed");
         double precipitationProbability = threeHourWeather.getDouble("pop");
+        LocalTime time = LocalTime.parse(threeHourWeather.getString("dt_txt").substring(11, 19));
 
-        return new DataPackage(temperature, pressure, icon, cloudiness, windSpeed, precipitationProbability, date);
+        return new DataPackage(temperature, pressure, humidity, icon, cloudiness, windSpeed, precipitationProbability, date, time);
+    }
+
+    private double convertKelvinToCelsius(double kelvinValue) {
+        return kelvinValue - 272.15;
     }
 
     private Collection<SingleDayWeather> buildFiveDayForecast(LocalDate today, Map<LocalDate, List<DataPackage>> dailyWeatherData) {

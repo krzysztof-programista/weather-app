@@ -4,6 +4,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import pl.example.controller.BaseController;
 import pl.example.controller.MainWindowController;
@@ -12,11 +14,13 @@ import java.io.IOException;
 
 public class ViewFactory {
 
-    private static final int MAIN_WINDOW_HEIGHT = 600;
-    private static final int MAIN_WINDOW_WIDTH = 1000;
+    private static final int MAIN_WINDOW_HEIGHT = 490;
+    private static final int MAIN_WINDOW_WIDTH = 840;
 
-    private static final BorderPane MAIN_VIEW = (BorderPane) loadFXML(new MainWindowController("MainWindow"));
-    private static final Scene SCENE = new Scene(MAIN_VIEW);
+    private static final VBox CURRENT_CITY = (VBox) loadFXML(new MainWindowController("SingleForecastWindow","Wpisz miasto zamieszkania","white"));
+    private static final VBox HOLIDAY_CITY = (VBox) loadFXML(new MainWindowController("SingleForecastWindow","Wpisz miasto docelowe","#caf0f8"));
+    private static final HBox COMBINED_VIEW = new HBox(CURRENT_CITY,HOLIDAY_CITY);
+    private static final Scene SCENE = new Scene(new BorderPane(COMBINED_VIEW));
 
     private static Parent loadFXML(BaseController controller) {
         FXMLLoader fxmlLoader = new FXMLLoader(ViewFactory.class.getResource(controller.getFxmlName() + ".fxml"));
@@ -32,6 +36,7 @@ public class ViewFactory {
     }
 
     public static void showMainWindow(Stage primaryStage){
+        primaryStage.setTitle("Aplikacja pogodowa");
         primaryStage.setScene(SCENE);
         primaryStage.setMinWidth(MAIN_WINDOW_WIDTH);
         primaryStage.setMinHeight(MAIN_WINDOW_HEIGHT);

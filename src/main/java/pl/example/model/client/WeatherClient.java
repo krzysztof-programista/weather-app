@@ -8,7 +8,8 @@ import java.util.Collection;
 
 public interface WeatherClient {
 
+    String getCity();
+    String getCountry();
     Collection<SingleDayWeather> getFiveDaysForecast(String cityName) throws IOException, URISyntaxException, InterruptedException;
-
 
 }
